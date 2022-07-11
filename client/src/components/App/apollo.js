@@ -18,7 +18,7 @@ import { getToken } from '../../lib/auth';
 const baseHttpLink = new HttpLink(
   process.env.NODE_ENV === 'production'
     ? { uri: '/api', credentials: 'same-origin' }
-    : { uri: 'http://localhost:4000/api', credentials: 'include' }
+    : { uri: 'https://live.worldcubeassociation.org/api', credentials: 'same-origin' }
 );
 
 const retryLink = new RetryLink({

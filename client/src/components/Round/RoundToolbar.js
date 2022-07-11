@@ -10,6 +10,7 @@ import {
 import TvIcon from '@mui/icons-material/Tv';
 import PrintIcon from '@mui/icons-material/Print';
 import { appUrl } from '../../lib/urls';
+import StreamEvent from '../Stream/StreamEvent';
 
 function RoundToolbar({ round, competitionId }) {
   const mdScreen = useMediaQuery((theme) => theme.breakpoints.up('md'));
@@ -43,6 +44,7 @@ function RoundToolbar({ round, competitionId }) {
               <TvIcon />
             </IconButton>
           </Tooltip>
+          <StreamEvent round={round}/>
         </Grid>
       )}
     </Grid>

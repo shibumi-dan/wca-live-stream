@@ -39,6 +39,10 @@ const ROUND_QUERY = gql`
       active
       competitionEvent {
         id
+        competition {
+          id
+          name
+        }
         event {
           id
           name
