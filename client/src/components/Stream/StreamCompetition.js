@@ -78,7 +78,7 @@ var requestOptions = {
     redirect: 'follow'
   };
   
-  fetch("https://app.singular.live/apiv1/datanodes/3oJaI4WmaA1nqVuVuMGwaU/data", requestOptions)
+  fetch("https://app.singular.live/apiv1/datanodes/2Gtu4VucUktNoXOdJgAKd2/data", requestOptions)
     .then(response => response.text())
     .then(result => console.log(result))
     .catch(error => console.log('error', error));

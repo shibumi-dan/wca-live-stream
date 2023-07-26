@@ -57,7 +57,7 @@ async function init(round) {
 
     let eventId = round.competitionEvent.event.id;
 
-    round.results.filter((result)=> result.ranking < 9).map((result, index)=>{
+    round.results.map((result, index)=>{
       console.log(result)
       //model
       data.model.fields.push({"defaultValue": "", "id": `player${index}name`, "title": `Player ${index} Name`, "type": "text"});
@@ -89,7 +89,7 @@ async function init(round) {
         redirect: 'follow'
       };
       
-      fetch("https://app.singular.live/apiv1/datanodes/3oJaI4WmaA1nqVuVuMGwaU/data", requestOptions)
+      fetch("https://app.singular.live/apiv1/datanodes/2Gtu4VucUktNoXOdJgAKd2/data", requestOptions)
         .then(response => response.text())
         .then(result => console.log(result))
         .catch(error => console.log('error', error));
