@@ -15,6 +15,7 @@ import { times } from '../../lib/utils';
 import { formatAttemptResult } from '../../lib/attempt-result';
 import { orderedResultStats, paddedAttemptResults } from '../../lib/result';
 import RecordTagBadge from '../RecordTagBadge/RecordTagBadge';
+import StreamUser from '../Stream/StreamUser';
 
 const styles = {
   cell: {
@@ -58,6 +59,7 @@ const RoundResultsTable = React.memo(
               >
                 #
               </TableCell>
+              <TableCell sx={styles.cell}>Stream</TableCell>
               <TableCell sx={styles.cell}>Name</TableCell>
               {mdScreen && <TableCell sx={styles.cell}>Country</TableCell>}
               {smScreen &&
@@ -93,6 +95,9 @@ const RoundResultsTable = React.memo(
                   }}
                 >
                   {result.ranking}
+                </TableCell>
+                <TableCell sx={{ ...styles.cell, ...styles.name }}>
+                  <StreamUser round={round} id={result.person.id}/>
                 </TableCell>
                 <TableCell sx={{ ...styles.cell, ...styles.name }}>
                   {smScreen ? (

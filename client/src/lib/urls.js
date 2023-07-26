@@ -1,6 +1,6 @@
 const production = process.env.NODE_ENV === 'production';
 
-const ORIGIN = production ? '' : 'http://localhost:4000';
+const ORIGIN = production ? '' : 'https://live.worldcubeassociation.org';
 
 const WCA_ORIGIN = production
   ? 'https://www.worldcubeassociation.org'

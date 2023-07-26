@@ -3,7 +3,7 @@ import { IconButton, Tooltip } from '@mui/material';
 import StreamIcon from '@mui/icons-material/Stream';
 import { formatAttemptResult } from '../../lib/attempt-result';
 
-async function init(round) {
+async function init(round, result, index) {
     const data = {
           "model": {
             "fields": [
@@ -57,27 +57,26 @@ async function init(round) {
 
     let eventId = round.competitionEvent.event.id;
 
-    round.results.filter((result)=> result.ranking < 9).map((result, index)=>{
-      console.log(result)
-      //model
-      data.model.fields.push({"defaultValue": "", "id": `player${index}name`, "title": `Player ${index} Name`, "type": "text"});
-      data.model.fields.push({"defaultValue": "", "id": `player${index}country`, "title": `Player ${index} Country`, "type": "text"});
-      data.model.fields.push({"defaultValue": "", "id": `player${index}solveAverage`, "title": `Player ${index} Average`, "type": "text"});
-      data.model.fields.push({"defaultValue": "", "id": `player${index}solveBest`, "title": `Player ${index} Best`, "type": "text"});
-      data.model.fields.push({"defaultValue": "", "id": `player${index}solveAdvancing`, "title": `Player ${index} Advancing`, "type": "text"});
+    index = 0;
+    console.log(result)
+    //model
+    data.model.fields.push({"defaultValue": "", "id": `player${index}name`, "title": `Player ${index} Name`, "type": "text"});
+    data.model.fields.push({"defaultValue": "", "id": `player${index}country`, "title": `Player ${index} Country`, "type": "text"});
+    data.model.fields.push({"defaultValue": "", "id": `player${index}solveAverage`, "title": `Player ${index} Average`, "type": "text"});
+    data.model.fields.push({"defaultValue": "", "id": `player${index}solveBest`, "title": `Player ${index} Best`, "type": "text"});
+    data.model.fields.push({"defaultValue": "", "id": `player${index}solveAdvancing`, "title": `Player ${index} Advancing`, "type": "text"});
 
-      //payload
-      data.payload[`player${index}name`] = result.person.name;
-      data.payload[`player${index}country`] = result.person.country.iso2;
-      data.payload[`player${index}solveAverage`] = formatAttemptResult(result.average, eventId);
-      data.payload[`player${index}solveBest`] = formatAttemptResult(result.best, eventId);
-      data.payload[`player${index}solveRank`] = result.ranking;
-      data.payload[`player${index}solveAdvancing`] = result.advancing;
-      result.attempts.map((attempt, i)=>{
-        data.model.fields.push({"defaultValue": "", "id": `player${index}solve${i}`, "title": `Player ${index} Solve ${i}`, "type": "text"});
-        data.payload[`player${index}solve${i}`] = formatAttemptResult(attempt.result, eventId);
-      })
-    });
+    //payload
+    data.payload[`player${index}name`] = result.person.name;
+    data.payload[`player${index}country`] = result.person.country.iso2;
+    data.payload[`player${index}solveAverage`] = formatAttemptResult(result.average, eventId);
+    data.payload[`player${index}solveBest`] = formatAttemptResult(result.best, eventId);
+    data.payload[`player${index}solveRank`] = result.ranking;
+    data.payload[`player${index}solveAdvancing`] = result.advancing;
+    result.attempts.map((attempt, i)=>{
+      data.model.fields.push({"defaultValue": "", "id": `player${index}solve${i}`, "title": `Player ${index} Solve ${i}`, "type": "text"});
+      data.payload[`player${index}solve${i}`] = formatAttemptResult(attempt.result, eventId);
+    })
 
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -97,7 +96,7 @@ async function init(round) {
 
 
 
-function StreamEvent({round}) {
+function StreamUser({round, id}) {
 
   // Render the layout even if the competition is not loaded.
   // This improves UX and also starts loading data for the actual page (like CompetitionHome).
@@ -119,4 +118,4 @@ function StreamEvent({round}) {
   );
 }
 
-export default StreamEvent;
+export default StreamUser;
