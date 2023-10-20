@@ -20,6 +20,7 @@ const ROUND_RESULT_FRAGMENT = gql`
     person {
       id
       name
+      wcaId
       country {
         iso2
         name

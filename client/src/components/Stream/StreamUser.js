@@ -1,102 +1,81 @@
 import React from 'react';
 import { IconButton, Tooltip } from '@mui/material';
 import StreamIcon from '@mui/icons-material/Stream';
-import { formatAttemptResult } from '../../lib/attempt-result';
+import { average, formatAttemptResult } from '../../lib/attempt-result';
+import { getEventName } from '../../lib/event-utils';
 
-async function init(round, result, index) {
-    const data = {
-          "model": {
-            "fields": [
-                {
-                    "defaultValue": "Comp Name",
-                    "id": "competitionName",
-                    "title": "Competition Name",
-                    "type": "text"
-                },
-                {
-                    "defaultValue": "841",
-                    "id": "competitionId",
-                    "title": "Competition Id",
-                    "type": "text"
-                },
-                {
-                    "defaultValue": "333",
-                    "id": "eventId",
-                    "title": "Event Id",
-                    "type": "text"
-                },
-                {
-                    "defaultValue": "3x3x3 Cube",
-                    "id": "eventName",
-                    "title": "Event Name",
-                    "type": "text"
-                },
-                {
-                    "defaultValue": "1",
-                    "id": "roundId",
-                    "title": "Round Id",
-                    "type": "text"
-                },
-                {
-                    "defaultValue": "Round 1",
-                    "id": "roundName",
-                    "title": "Round Name",
-                    "type": "text"
-                }
-            ]
-        },
-        "payload": {
-          "competitionName": round.competitionEvent.competition.name,
-          "competitionId": round.competitionEvent.competition.id,
-          "eventName": round.competitionEvent.event.name,
-          "eventId": round.competitionEvent.event.id,
-          "roundName": round.name,
-          "roundId": round.id
-        }
+async function init(type, eventId, wcaId) {
+  var myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+
+ 
+    const val = await fetch(`https://raw.githubusercontent.com/robiningelbrecht/wca-rest-api/master/api/persons/${wcaId}.json`);
+    const json = JSON.parse(await val.text());
+    
+    //let selection = json.rank.averages.map((d)=> {return {id: formatAttemptResult(d.best, d.eventId), title: `${getEventName(d.eventId)} (AVG)`}})
+    //selection = selection.concat(json.rank.singles.map((d)=> {return {id: formatAttemptResult(d.best, d.eventId), title: `${getEventName(d.eventId)} (SINGLE)`}}))
+    const singleObj = json.rank.singles.find((s)=> s.eventId === eventId);
+    let single = "First Time Solver"
+    if(singleObj!==undefined){
+      single = `${getEventName(eventId)} PR Single: ${formatAttemptResult(singleObj.best, eventId)}`
     }
 
-    let eventId = round.competitionEvent.event.id;
+    const avgObj = json.rank.averages.find((s)=> s.eventId === eventId);
+    let average = "First Time Solver"
+    if(avgObj!==undefined){
+      average =  `${getEventName(eventId)} PR Average: ${formatAttemptResult(avgObj.best, eventId)}`
+    }
 
-    index = 0;
-    console.log(result)
-    //model
-    data.model.fields.push({"defaultValue": "", "id": `player${index}name`, "title": `Player ${index} Name`, "type": "text"});
-    data.model.fields.push({"defaultValue": "", "id": `player${index}country`, "title": `Player ${index} Country`, "type": "text"});
-    data.model.fields.push({"defaultValue": "", "id": `player${index}solveAverage`, "title": `Player ${index} Average`, "type": "text"});
-    data.model.fields.push({"defaultValue": "", "id": `player${index}solveBest`, "title": `Player ${index} Best`, "type": "text"});
-    data.model.fields.push({"defaultValue": "", "id": `player${index}solveAdvancing`, "title": `Player ${index} Advancing`, "type": "text"});
-
-    //payload
-    data.payload[`player${index}name`] = result.person.name;
-    data.payload[`player${index}country`] = result.person.country.iso2;
-    data.payload[`player${index}solveAverage`] = formatAttemptResult(result.average, eventId);
-    data.payload[`player${index}solveBest`] = formatAttemptResult(result.best, eventId);
-    data.payload[`player${index}solveRank`] = result.ranking;
-    data.payload[`player${index}solveAdvancing`] = result.advancing;
-    result.attempts.map((attempt, i)=>{
-      data.model.fields.push({"defaultValue": "", "id": `player${index}solve${i}`, "title": `Player ${index} Solve ${i}`, "type": "text"});
-      data.payload[`player${index}solve${i}`] = formatAttemptResult(attempt.result, eventId);
-    })
-
-    var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-
+    const data = {
+      "model": {
+        "fields": [
+          {
+              "defaultValue": "Player Name",
+              "id": "name",
+              "title": "Player Name",
+              "type": "text"
+          },
+          {
+              "defaultValue": "0",
+              "id": "single",
+              "title": "Player Best Single",
+              "type": "text"
+          },
+          {
+              "defaultValue": "0",
+              "id": "average",
+              "title": "Player Best Average",
+              "type": "text"
+          }
+      ]
+      },
+      "payload": {
+        "name": (json.name + ""),
+        "single": type === "single" ? single : average
+      }
+    }
+    
+    console.log(json)
+  
+    
     var requestOptions = {
-        method: 'PUT',
-        headers: myHeaders,
-        body: JSON.stringify(data),
-        redirect: 'follow'
-      };
-      
-      fetch("https://app.singular.live/apiv1/datanodes/3oJaI4WmaA1nqVuVuMGwaU/data", requestOptions)
-        .then(response => response.text())
-        .then(result => console.log(result))
-        .catch(error => console.log('error', error));
+      method: 'PUT',
+      headers: myHeaders,
+      body: JSON.stringify(data),
+      redirect: 'follow'
+    };
+    
+    fetch("https://app.singular.live/apiv1/datanodes/0NdPtR2WpFYZtDZ6qflFxT/data", requestOptions)
+      .then(response => response.text())
+      .then(result => console.log(result))
+      .catch(error => {
+        console.log('error', error)
+      });
 }
 
 
 
-function StreamUser({round, id}) {
+function StreamUser({type, eventId, wcaId}) {
 
   // Render the layout even if the competition is not loaded.
   // This improves UX and also starts loading data for the actual page (like CompetitionHome).
@@ -107,10 +86,9 @@ function StreamUser({round, id}) {
           <IconButton
             color="inherit"
             onClick={()=>{
-                init(round)
-                console.log(round)
+                init(type, eventId, wcaId)
             }}
-            size="large"
+            size="small"
           >
             <StreamIcon />
           </IconButton>

@@ -22,7 +22,7 @@
     "date-fns": "^2.25.0",
     "graphql": "^16.0.1",
     "material-ui-confirm": "^3.0.2",
-    "notistack": "^2.0.3",
+    "notistack": "^2.0.8",
     "phoenix": "^1.6.2",
     "react": "^18.2.0",
     "react-app-polyfill": "^3.0.0",
