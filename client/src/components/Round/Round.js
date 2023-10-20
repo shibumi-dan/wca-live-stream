@@ -20,6 +20,7 @@ const ROUND_RESULT_FRAGMENT = gql`
     person {
       id
       name
+      wcaId
       country {
         iso2
         name
@@ -39,6 +40,10 @@ const ROUND_QUERY = gql`
       active
       competitionEvent {
         id
+        competition {
+          id
+          name
+        }
         event {
           id
           name
