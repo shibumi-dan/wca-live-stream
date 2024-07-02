@@ -6,6 +6,7 @@ import Round from '../Round/Round';
 import Competitors from '../Competitors/Competitors';
 import Competitor from '../Competitor/Competitor';
 import Podiums from '../Podiums/Podiums';
+import TimeBase from '../TimeBase/TimeBase';
 import Error from '../Error/Error';
 import CompetitionLayout from './CompetitionLayout';
 import Loading from '../Loading/Loading';
@@ -59,6 +60,7 @@ function CompetitionNavigation() {
         <Route path="competitors" element={<Competitors />} />
         <Route path="competitors/:competitorId" element={<Competitor />} />
         <Route path="podiums" element={<Podiums />} />
+        <Route path="timebase" element={<TimeBase />} />
         <Route
           path="*"
           element={<Navigate to={`/competitions/${competitionId}`} />}

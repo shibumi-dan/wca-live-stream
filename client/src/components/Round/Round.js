@@ -18,6 +18,7 @@ const ROUND_RESULT_FRAGMENT = gql`
     best
     average
     person {
+      wcaId
       id
       name
       wcaId
