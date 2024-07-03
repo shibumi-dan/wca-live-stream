@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { SendResults } from '../../lib/singular-live';
 import {
   Button,
   Card,
@@ -10,7 +10,7 @@ import {
 
 function TimeBaseStation({ competitionId, index }) {
 
-  const [name, setName] = useState(null);
+  const [results, setResults] = useState(null);
 
   const openWss = (index) => {
     //var ws = new WebSocket('wss://api.timebase.live/livestream/BayAreaSpeedcubin632024/1');
@@ -31,7 +31,7 @@ function TimeBaseStation({ competitionId, index }) {
     socket.addEventListener("message", (event) => {
       console.log("Message from server - " + index, event.data);
       const data = JSON.parse(event.data);
-      setName(data.name)
+      setResults(data)
     });
 
     const ping = ()=>{
@@ -48,14 +48,15 @@ function TimeBaseStation({ competitionId, index }) {
         <Button
           key={index}
           button
-          component={RouterLink}
-          to={`/competitions/${competitionId}/competitors/${index}`}
+          onClick={() => {
+            SendResults(results);
+          }}
         >
           <Card>
             <CardContent>
               <Typography variant='h5'>#{index}</Typography>
               
-              <Typography variant='caption'>{name}</Typography>
+              {results && <Typography variant='caption'>{results.name}</Typography>}
             </CardContent>
           </Card>
         </Button>
