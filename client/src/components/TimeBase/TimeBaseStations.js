@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import {
   Grid,
@@ -18,29 +18,29 @@ import {
 import SearchIcon from '@mui/icons-material/Search';
 import FlagIcon from '../FlagIcon/FlagIcon';
 import TimeBaseStation from './TimeBaseStation';
-
-function searchCompetitors(competitors, search) {
-  const searchParts = search.toLowerCase().split(/\s+/);
-  return competitors.filter((competitor) =>
-    searchParts.every((part) => competitor.name.toLowerCase().includes(part))
-  );
-}
+import { SendResults, GetTimeBaseStation } from '../../lib/singular-live';
 
 function TimeBaseStations({ competitors, competitionId }) {
-  const [search, setSearch] = useState('');
+  const [player1, setPlayer1] = useState(null);
+  const [player2, setPlayer2] = useState(null);
 
-  const filteredCompetitors = searchCompetitors(competitors, search).sort(
-    (a, b) => a.name.localeCompare(b.name)
-  );
+  useEffect(()=>{
+    console.log("Multi-Update")
+    SendResults(player1, player2)
+  }, [player1, player2])
 
   return (
     <Grid container direction="column" alignItems="center" spacing={1}>
       <Grid container item sx={{ width: '100%' }}>
-          {[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16].map((index) => (
+          {[1,9].map((index) => (
             <Grid item xs={{ width: '200px' }}>
               <TimeBaseStation
                 competitionId={competitionId}
                 index={index}
+                onData={(data) => {
+                  if(index === 1) setPlayer1(data)
+                  if(index === 9) setPlayer2(data)
+                }}
               />
             </Grid>
           ))}
