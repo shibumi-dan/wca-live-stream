@@ -9,6 +9,7 @@ const COMPETITORS_QUERY = gql`
   query Competition($competitionId: ID!) {
     competition(id: $competitionId) {
       id
+      wcaId
       competitors {
         id
         name
@@ -33,7 +34,7 @@ function TimeBase() {
   return (
     <TimeBaseStations
       competitors={competition.competitors}
-      competitionId={competition.id}
+      competitionId={competition.wcaId}
     />
   );
 }

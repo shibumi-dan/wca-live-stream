@@ -4,6 +4,7 @@ import {
   Button,
   Card,
   CardContent,
+  Grid,
   Paper,
   Typography
 } from '@mui/material';
@@ -13,11 +14,11 @@ function TimeBaseStation({ competitionId, index, onData }) {
 
   const [results, setResults] = useState(null);
   const [color, setcolor] = useState("#CCCCCC");
-
+  
   const openWss = (index) => {
     //var ws = new WebSocket('wss://api.timebase.live/livestream/BayAreaSpeedcubin632024/1');
   
-    const socket = new WebSocket(`wss://api.timebase.live/livestream/feliksandmaxla2024/${index}`);
+    const socket = new WebSocket(`wss://api.timebase.live/livestream/${competitionId}/${index}`);
   
   // Connection opened
     socket.addEventListener("open", (event) => {
@@ -55,23 +56,37 @@ useEffect(()=>{
   return (
     <Paper
       key={"paper" + index}
+      style={{margin: 16}}
     >
-      <OnlinePredictionIcon style={{color: color}}/>
-      <Typography variant='h5'>#{index}</Typography>
+      
+      <Grid container>
+        <Grid item xs={2}>
+          <OnlinePredictionIcon style={{color: color}}/>
+        </Grid>
+        <Grid item xs={2}>
+          <Typography variant='body'>#{index}</Typography>
+        </Grid>
+        <Grid item xs={8}>
+        {results && <Typography variant='body'>{results.name}</Typography>}
+        {!results && <Typography variant='body'>--</Typography>}
+        </Grid>
+      </Grid>
+      
       <Button
           key={"Singular" + index}
           button
           onClick={() => {
             onData(results, index);
           }}
-        >
-          <Card>
-            <CardContent>
-              <Typography variant='caption'>Stream</Typography>
-            </CardContent>
-          </Card>
-        </Button>
-        <Button
+          style={{paddingTop: 0, paddingBottom: 0}}
+      >
+        <Card>
+          <CardContent>
+            <Typography variant='caption'>Send Stream</Typography>
+          </CardContent>
+        </Card>
+      </Button>
+      <Button
           key={"Timebase" + index}
           button
           onClick={() => {
@@ -82,14 +97,14 @@ useEffect(()=>{
             })
             
           }}
-        >
-          <Card>
-            <CardContent>
-              <Typography variant='caption'>Timebase</Typography>
-            </CardContent>
-          </Card>
-        </Button>
-        {results && <Typography variant='body'>{results.name}</Typography>}
+      >
+        <Card>
+          <CardContent>
+            <Typography variant='caption'>Pull Timebase</Typography>
+          </CardContent>
+        </Card>
+      </Button>
+      
     </Paper>
         
 
