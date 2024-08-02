@@ -8,6 +8,7 @@ import {
   FormControl,
 } from '@mui/material';
 import StreamIcon from '@mui/icons-material/Stream';
+import SendTimeExtensionIcon from '@mui/icons-material/SendTimeExtension';
 import { UpdateStreamRoundProjections, UpdateStreamRoundResults } from '../../lib/singular-live';
 
 function StreamEvent({round, projections}) {
@@ -24,7 +25,7 @@ function StreamEvent({round, projections}) {
 
   return (
     <>
-    <Tooltip title="Update Stream">
+    <Tooltip title={projections ? "Update Projections" : "Update Fulltext"}>
           <IconButton
             color="inherit"
             onClick={()=>{
@@ -33,7 +34,8 @@ function StreamEvent({round, projections}) {
             }}
             size="large"
           >
-            <StreamIcon />
+            {projections && <SendTimeExtensionIcon /> }
+            {!projections && <StreamIcon /> }
           </IconButton>
       </Tooltip>
       {!projections && <FormControl>

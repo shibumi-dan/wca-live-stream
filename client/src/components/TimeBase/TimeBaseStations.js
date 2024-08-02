@@ -40,7 +40,7 @@ function TimeBaseStations({ competitors, competitionId }) {
   return (
     <Grid container direction="column" alignItems="center" spacing={1}>
       <Grid container item xs={12}>
-          {[1,2,3,4,5,6].map((index) => (
+          {[5,7,25,19,2,10].map((index) => (
             <Grid container item xs={12}>
               <Grid container item xs={1}>
                 <Button
@@ -99,7 +99,7 @@ function TimeBaseStations({ competitors, competitionId }) {
                   competitionId={competitionId}
                   index={index}
                   onData={(data) => {
-                    if(playerData[0].index === index){
+                    if(playerData[0].channel === index){
                       setPlayerData([
                         {
                           channel: index,
@@ -111,7 +111,7 @@ function TimeBaseStations({ competitors, competitionId }) {
                         }
                       ])
                     } 
-                    if(playerData[1].index === index){
+                    if(playerData[1].channel === index){
                       setPlayerData([
                         {
                           channel: playerData[0].channel,
