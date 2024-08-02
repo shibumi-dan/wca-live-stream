@@ -236,6 +236,8 @@ export async function UpdateStreamRoundProjections(round, rankRange) {
         data.payload[`player${idx}solveAdvancing`] = "";
         data.payload[`player${idx}solveCount`] = 0;
         data.payload[`player${idx}solveProjection`] = "";
+        data.payload[`player${idx}BPA`] = "";
+        data.payload[`player${idx}WPA`] = "";
         
         for(var i = 0; i < round.format.numberOfAttempts; i++){
             data.model.fields.push({"defaultValue": "", "id": `player${idx}solve${i}`, "title": `Player ${idx} Solve ${i}`, "type": "text"});
