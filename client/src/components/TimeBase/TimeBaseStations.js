@@ -1,24 +1,13 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
 import {
   Grid,
-  IconButton,
-  InputBase,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemIcon,
-  Paper,
   Button,
   Card,
   CardContent,
   Typography,
-  CardHeader,
 } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
-import FlagIcon from '../FlagIcon/FlagIcon';
 import TimeBaseStation from './TimeBaseStation';
-import { SendResults, GetTimeBaseStation } from '../../lib/singular-live'; 
+import { SendResults } from '../../lib/singular-live'; 
 
 function TimeBaseStations({ competitors, competitionId }) {
 

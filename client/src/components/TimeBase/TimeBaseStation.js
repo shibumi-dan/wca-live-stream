@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { SendResults, GetTimeBaseStation } from '../../lib/singular-live';
+import { GetTimeBaseStation } from '../../lib/singular-live';
 import {
   Button,
   Card,

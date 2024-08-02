@@ -162,9 +162,11 @@ export async function UpdateStreamRoundProjections(round, rankRange) {
     round.results.forEach((result)=>{
         const playerResult = {}
         const solves = []
+        playerResult.rawSolves = []
         playerResult.solves = []
         result.attempts.forEach((attempt, i)=>{
             solves.push(attempt.result)
+            playerResult.rawSolves.push(attempt.result)
             playerResult.solves.push(formatAttemptResult(attempt.result, eventId))
         })
         /*
@@ -222,7 +224,9 @@ export async function UpdateStreamRoundProjections(round, rankRange) {
         data.model.fields.push({"defaultValue": "", "id": `player${idx}solveRank`, "title": `Player ${idx} Rank`, "type": "text"});
         data.model.fields.push({"defaultValue": "", "id": `player${idx}solveAdvancing`, "title": `Player ${idx} Advancing`, "type": "text"});
         data.model.fields.push({"defaultValue": "", "id": `player${idx}solveCount`, "title": `Player ${idx} Solve Count`, "type": "text"});
-
+        data.model.fields.push({"defaultValue": "", "id": `player${idx}BPA`, "title": `Player ${idx} BPA`, "type": "text"});
+        data.model.fields.push({"defaultValue": "", "id": `player${idx}WPA`, "title": `Player ${idx} WPA`, "type": "text"});
+        
 
         data.payload[`player${idx}name`] = "";
         data.payload[`player${idx}country`] = "";
@@ -232,10 +236,11 @@ export async function UpdateStreamRoundProjections(round, rankRange) {
         data.payload[`player${idx}solveAdvancing`] = "";
         data.payload[`player${idx}solveCount`] = 0;
         data.payload[`player${idx}solveProjection`] = "";
-        [0,1,2,3,4,5].forEach((solve, i)=>{
+        
+        for(var i = 0; i < round.format.numberOfAttempts; i++){
             data.model.fields.push({"defaultValue": "", "id": `player${idx}solve${i}`, "title": `Player ${idx} Solve ${i}`, "type": "text"});
-            data.payload[`player${idx}solve${i}`] = solve
-        })
+            data.payload[`player${idx}solve${i}`] = "";
+        }
 
         //payload
         if(playerResult !== null && playerResult !== undefined){
@@ -251,6 +256,17 @@ export async function UpdateStreamRoundProjections(round, rankRange) {
                 data.model.fields.push({"defaultValue": "", "id": `player${idx}solve${i}`, "title": `Player ${idx} Solve ${i}`, "type": "text"});
                 data.payload[`player${idx}solve${i}`] = solve
             })
+            if(round.format.numberOfAttempts === (playerResult.rawSolves.length + 1)) {
+                data.payload[`player${idx}BPA`] = formatAttemptResult(average(playerResult.rawSolves.concat(0.01), eventId), eventId);
+                data.payload[`player${idx}WPA`] = formatAttemptResult(average(playerResult.rawSolves.concat(-1), eventId), eventId);
+            } else if(round.format.numberOfAttempts === playerResult.rawSolves.length) {
+                const allButLast = playerResult.rawSolves.slice(0, playerResult.rawSolves.length - 1)
+                data.payload[`player${idx}BPA`] = formatAttemptResult(average(allButLast.concat(0.01), eventId), eventId);
+                data.payload[`player${idx}WPA`] = formatAttemptResult(average(allButLast.concat(-1), eventId), eventId);  
+            } else {
+                data.payload[`player${idx}BPA`] = "--";
+                data.payload[`player${idx}WPA`] = "--";  
+            }
         } 
         
     }
@@ -282,6 +298,8 @@ function getSolvesRemaining(attemptCount, roundCount){
                 return "²";
             case 4:
                 return "¹";
+            default:
+                return "";
     
         }
     }
@@ -289,12 +307,33 @@ function getSolvesRemaining(attemptCount, roundCount){
 }
 
 function formatName(name){
+    let formattedName = name;
     if(name.includes("(")){
-        return name.split("(")[0].trim()
+        formattedName = name.split("(")[0].trim()
     }
-    return name;
+
+    return getInitialAndSurname(formattedName);
 }
 
+function getInitialAndSurname(fullName) {
+    // Split the full name by spaces
+    const nameParts = fullName.trim().split(/\s+/);
+
+    // Ensure there are at least two parts (given name and surname)
+    if (nameParts.length < 2) {
+        return fullName;
+    }
+
+    // Extract the given name and surname
+    const givenName = nameParts[0];
+    const surname = nameParts[nameParts.length - 1];
+
+    // Get the first letter of the given name
+    const initial = givenName.charAt(0);
+
+    // Combine the initial and surname
+    return `${initial}. ${surname}`;
+}
 
 export function SendResults(player1, player2) {
     
@@ -478,7 +517,6 @@ function getResult(result) {
 
 
 export function GetTimeBaseStation(index, callback){
-    let ret = {};
 
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -526,7 +564,7 @@ function formatResults(player1, index) {
     const dnCount = player1Results.filter(r=>r < 0).length;
     const solvesRemaining = player1Results.filter(r=>r === "").length;
     
-    const eventId = player1.current_results[0] !== null && player1.current_results[0] !== undefined ? player1.current_results[0].event_id : "333";
+    //const eventId = player1.current_results[0] !== null && player1.current_results[0] !== undefined ? player1.current_results[0].event_id : "333";
     let avg = formatSeconds(averageTimeBase(player1Results));
     if(avg < 0 && solvesRemaining === 0) avg = "DNF";
     if(solvesRemaining > 0) avg = "--";
@@ -534,7 +572,7 @@ function formatResults(player1, index) {
     let best = solvesRemaining === 1 ? formatSeconds(bestAverage(player1Results)) : "--";
     if(best < 0) best = "DNF";
     
-    const worst = solvesRemaining === 1 ? formatSeconds(worstAverage(player1Results)) : "--";
+    let worst = solvesRemaining === 1 ? formatSeconds(worstAverage(player1Results)) : "--";
     if(worst < 0) worst = "DNF";
     
     item[`p${index}Name`] = player1.name
@@ -603,6 +641,8 @@ function averageProjectionMeanOf3(values){
             return values.reduce((sum, current) => sum + current, 0) / 2;
         case 3:
             return values.reduce((sum, current) => sum + current, 0) / 3;
+        default:
+
     }
     return ""
 }
@@ -644,6 +684,8 @@ function averageProjectionAo5(results){
         case 5:
             values.sort();
             return (values[1] + values[2] + values[3]) / 3;
+        default:
+            return "--"
     }
 
 }
@@ -653,7 +695,7 @@ function averageTimeBase(results){
     if(results.filter(r=>r === "DNF").length > 1) return -1
 
     const values = results.filter(r=>r !== "DNF")
-    if(results.length != values.length){
+    if(results.length !== values.length){
         values.sort((a, b) => b - a);
         return (values.slice(0, 3).reduce((sum, current) => sum + current, 0)) / 3;
     } else {

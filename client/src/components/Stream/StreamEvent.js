@@ -51,7 +51,7 @@ function StreamEvent({round, projections}) {
           }}
         >
           {round.results.map((item, i)=>{
-            if((i%8)==0){
+            if((i%8)===0){
               console.log(i);
               return <MenuItem key={`${round.competitionEvent.competition.id}-${i}`} value={i}>{i+1} to {i+8}</MenuItem>
             }

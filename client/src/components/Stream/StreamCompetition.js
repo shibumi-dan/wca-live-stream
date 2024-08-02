@@ -1,34 +1,7 @@
 import React from 'react';
-import { gql, useQuery } from '@apollo/client';
 import { IconButton, Tooltip } from '@mui/material';
 import StreamIcon from '@mui/icons-material/Stream';
-import Error from '../Error/Error';
-import { secondsInMinute } from 'date-fns';
 
-const COMPETITION_QUERY = gql`
-  query Competition($id: ID!) {
-    competition(id: $id) {
-      id
-      shortName
-      competitionEvents {
-        id
-        event {
-          id
-          name
-        }
-        rounds {
-          id
-          name
-          label
-          open
-        }
-      }
-      access {
-        canScoretake
-      }
-    }
-  }
-`;
 
 async function init(competition) {
     const data = JSON.stringify({
