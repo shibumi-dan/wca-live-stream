@@ -626,7 +626,7 @@ function averageProjection(results, sortBy, numberOfSolves){
             case 0:
                 return -1;
             default:  
-                values.sort();
+                values.sort((a,b) => a - b);
                 return values[0];
         }
     }
@@ -665,26 +665,26 @@ function averageProjectionAo5(results){
                 return values.reduce((sum, current) => sum + current, 0) / 2;
             }
             // DNF
-            values.sort();
+            values.sort((a,b) => a - b);
             return values[1];
         case 3:
             if(results.length === values.length){
-                values.sort();
+                values.sort((a,b) => a - b);
                 return values[1];
             }
             // DNF
-            values.sort();
+            values.sort((a,b) => a - b);
             return (values[1] + values[2]) / 2;
         case 4:
             if(results.length === values.length){
-                values.sort();
+                values.sort((a,b) => a - b);
                 return (values[1] + values[2]) / 2;
             }
             // DNF
-            values.sort();
+            values.sort((a,b) => a - b);
             return (values[1] + values[2] + values[3]) / 3;
         case 5:
-            values.sort();
+            values.sort((a,b) => a - b);
             return (values[1] + values[2] + values[3]) / 3;
         default:
             return "--"
