@@ -5,6 +5,7 @@ import CompetitionNavigation from '../CompetitionNavigation/CompetitionNavigatio
 import DefaultNavigation from '../DefaultNavigation/DefaultNavigation';
 
 function Navigation() {
+
   return (
     <Routes>
       <Route
@@ -21,3 +22,4 @@ function Navigation() {
 }
 
 export default Navigation;
+

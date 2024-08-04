@@ -44,7 +44,8 @@ function RoundToolbar({ round, competitionId }) {
               <TvIcon />
             </IconButton>
           </Tooltip>
-          <StreamEvent round={round}/>
+          <StreamEvent round={round} projections={true}/>
+          <StreamEvent round={round} projections={false}/>
         </Grid>
       )}
     </Grid>
